@@ -2,8 +2,7 @@
 """
 Created on Thu Jan 28 09:51:54 2021
 
-authors: Mario Delgado Rodriguez
-         Théo Vuillermot
+@author: mdr13
 """
 
 
@@ -148,6 +147,13 @@ def GaussChoixPivotTotal(A, B):
     t2 = t.time()
     t_final = t2 - t1
     return x, t_final
+#--------------------Comparaison avec linalg.solve-----------------------------
+def SolveurLinalg(A, B):
+    t1 = t.time()
+    x = np.linalg.solve(A, B)
+    t2 = t.time()
+    t_final = t2 - t1
+    return x, t_final
 
 def Erreur(A, B, X):
     vec = np.dot(A, X) - B
@@ -193,7 +199,11 @@ NTotal = list()
 TTotal = list()
 ETotal = list()
 
-for n in range(10, 500, 20):
+NLinal = list()
+TLinal = list()
+ELinal = list()
+
+for n in range(10, 200, 20):
     A, B = Mat_Random(n)
     #print(A)
     #print("------------------------------------")
@@ -208,7 +218,7 @@ for n in range(10, 500, 20):
     TGauss.append(temps)
     EGauss.append(erreur)
 
-for n in range(10, 500, 20):
+for n in range(10, 200, 20):
     A, B = Mat_Random(n)
     sol, temps = ResolutionLU(A, B)
     erreur = Erreur(A, B, sol)
@@ -216,7 +226,7 @@ for n in range(10, 500, 20):
     TLU.append(temps)
     ELU.append(erreur)
     
-for n in range(10, 500, 20):
+for n in range(10, 200, 20):
     A, B = Mat_Random(n)
     sol, temps = GaussChoixPivotPartiel(A, B)
     erreur = Erreur(A, B, sol)
@@ -224,13 +234,21 @@ for n in range(10, 500, 20):
     TPartiel.append(temps)
     EPartiel.append(erreur)
 
-for n in range(10, 500, 20):
+for n in range(10, 200, 20):
     A, B = Mat_Random(n)
     sol, temps = GaussChoixPivotTotal(A, B)
     erreur = Erreur(A, B, sol)
     NTotal.append(n)
     TTotal.append(temps)
     ETotal.append(erreur)
+    
+for n in range(10, 200, 20):
+    A, B = Mat_Random(n)
+    sol, temps = SolveurLinalg(A, B)
+    erreur = Erreur(A, B, sol)
+    NLinal.append(n)
+    TLinal.append(temps)
+    ELinal.append(erreur)
     
 def GraphTemps():    
     plt.figure()
@@ -239,6 +257,7 @@ def GraphTemps():
     plt.plot(NLU, TLU, color='black', label='LU')
     plt.plot(NPartiel, TPartiel, color = 'green', label='Partiel')
     plt.plot(NTotal, TTotal, color = 'red', label='Total')
+    plt.plot(NLinal, TLinal, color = 'orange', label='Linalg.solve')
     plt.legend()
     plt.xlabel('Dimension')
     plt.ylabel('Temps (en s)')
@@ -251,6 +270,7 @@ def GraphTempslog():
     plt.plot(NLU, TLU, color='black', label='LU')
     plt.plot(NPartiel, TPartiel, color = 'green', label='Partiel')
     plt.plot(NTotal, TTotal, color = 'red', label='Total')
+    plt.plot(NLinal, TLinal, color = 'orange', label='Linalg.solve')
     plt.legend()
     plt.yscale('log')
     plt.xlabel('Dimension')
@@ -265,6 +285,7 @@ def GraphErreur():
     plt.plot(NLU, ELU, color='black', label='LU')
     plt.plot(NPartiel, EPartiel, color = 'green', label='Partiel')
     plt.plot(NTotal, ETotal, color = 'red', label='Total')
+    plt.plot(NLinal, ELinal, color = 'orange', label='Linalg.solve')
     plt.legend()
     plt.xlabel('Dimension')
     plt.ylabel('Erreur (norme)')
