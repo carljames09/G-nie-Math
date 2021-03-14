@@ -2,7 +2,8 @@
 """
 Created on Thu Jan 28 09:51:54 2021
 
-@author: mdr13
+authors: Mario Delgado Rodriguez
+         Théo Vuillermot
 """
 
 
