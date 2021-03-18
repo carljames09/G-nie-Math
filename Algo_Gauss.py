@@ -26,9 +26,9 @@ def ResolutionSystTriSup(Taug):
     x = np.zeros(n)
     for i in range (n-1, -1, -1):
         somme = 0
-        for k in range (i, n):
+        for k in range (i+1, n):
             somme = somme + x[k] * Taug[i,k]
-            x[i] = (Taug[i,n] - somme) / Taug[i,i]  
+        x[i] = (Taug[i,n] - somme) / Taug[i,i]  
     return x
 
 def Gauss(A, B):
@@ -112,31 +112,33 @@ def GaussChoixPivotPartiel(A,B):
 def ReductionGaussTotal(Aaug) :
     n,m = Aaug.shape
     for k in range(n):
-        #print(Aaug)
-        pivot_max = Aaug[k,k]
-        indice_max = k
+        print(Aaug)
+        pivot_maxl = Aaug[k,k]
+        indice_maxl = k
         for i in range(k+1,n): #balayage ligne
-            if abs(Aaug[i,i]) > abs(pivot_max):
-                pivot_max = Aaug[i,i]
-                indice_max = i
-        K= np.copy(Aaug[k,:])
-        Aaug[k,:] = Aaug[indice_max,:]
-        Aaug[indice_max,:] = K
-        #print(Aaug)
+            if abs(Aaug[i,i]) > abs(pivot_maxl):
+                pivot_maxl = Aaug[i,i]
+                indice_maxl = i
+        K = np.copy(Aaug[k,:])
+        Aaug[k,:] = Aaug[indice_maxl,:]
+        Aaug[indice_maxl,:] = K
+        print(Aaug)
         for i in range(k+1,m):
-            if abs(Aaug[k,k]) <= abs(Aaug[k,i]):
-                K = np.copy(Aaug[:,k])
-                Aaug[:,k] = Aaug[:,i]
-                Aaug[:,i] = K
-        #print('######')
-        #print(Aaug)
-        #print('######')
+            if abs(Aaug[k,i]) > abs(pivot_maxl):
+                pivot_maxl = Aaug[k,i]
+                indice_maxl = i
+        L = np.copy(Aaug[:,k])
+        Aaug[:,k] = Aaug[:,indice_maxl]
+        Aaug[:,indice_maxl] = L
+        print('######')
+        print(Aaug)
+        print('k=',k)
+        print('######')
         for i in range (k+1,n):
            g = Aaug[i,k]/Aaug[k,k]
-           #print(g)
+           print(g)
            for j in range(k, n+1):
                Aaug[i,j] = Aaug[i,j] - g * Aaug[k,j]
-              #print(Aaug)
     return Aaug
 
 def GaussChoixPivotTotal(A, B):
@@ -165,23 +167,26 @@ def Mat_Random(n):
     return A, B
 
 def Mat_RandomInt(n):
-    A = np.random.randint(low=1, high=100, size=(n, n))
-    B = np.random.randint(low=1, high=100, size=n)
+    A = np.random.randint(low=1, high=10, size=(n, n))
+    B = np.random.randint(low=1, high=10, size=n)
     return A, B
 """
 #-----------------------------------Test---------------------------------------
-A = np.array([[3,5,-1,4], [-3,-6,4,-2], [6,2,2,7], [9,4,2,18]])
-B = np.array([4,-5,-2,13])
+A = [ [2,2,-3], [-2,-1,-3], [6,4,4] ]
+B = [2,-5,16]
+
 x1,t1 = GaussChoixPivotPartiel(A, B)
 x2,t2 = Gauss(A, B)
 x3,t3 = GaussChoixPivotTotal(A, B)
 x4,t4 = ResolutionLU(A, B)
-print(x1)
-print(x2)
-print(x3)
-print(x4)
-
+x5,t5 = SolveurLinalg(A, B)
+print(x1,Erreur(A, B, x1))
+print(x2,Erreur(A, B, x2))
+print(x3,Erreur(A, B, x3))
+print(x4,Erreur(A, B, x4))
+print(x5,Erreur(A, B, x5))
 """
+
 
 NGauss = list()
 TGauss = list()
@@ -203,7 +208,7 @@ NLinal = list()
 TLinal = list()
 ELinal = list()
 
-for n in range(10, 200, 20):
+for n in range(10, 500, 20):
     A, B = Mat_Random(n)
     #print(A)
     #print("------------------------------------")
@@ -217,16 +222,17 @@ for n in range(10, 200, 20):
     NGauss.append(n)
     TGauss.append(temps)
     EGauss.append(erreur)
+    
 
-for n in range(10, 200, 20):
+for n in range(10, 500, 50):
     A, B = Mat_Random(n)
     sol, temps = ResolutionLU(A, B)
     erreur = Erreur(A, B, sol)
     NLU.append(n)
     TLU.append(temps)
     ELU.append(erreur)
-    
-for n in range(10, 200, 20):
+ 
+for n in range(10, 500, 50):
     A, B = Mat_Random(n)
     sol, temps = GaussChoixPivotPartiel(A, B)
     erreur = Erreur(A, B, sol)
@@ -234,21 +240,22 @@ for n in range(10, 200, 20):
     TPartiel.append(temps)
     EPartiel.append(erreur)
 
-for n in range(10, 200, 20):
+for n in range(10, 500, 50):
     A, B = Mat_Random(n)
     sol, temps = GaussChoixPivotTotal(A, B)
     erreur = Erreur(A, B, sol)
     NTotal.append(n)
     TTotal.append(temps)
     ETotal.append(erreur)
-    
-for n in range(10, 200, 20):
-    A, B = Mat_Random(n)
+  
+for n in range(10, 500, 50):
+    A, B = Mat_RandomInt(n)
     sol, temps = SolveurLinalg(A, B)
     erreur = Erreur(A, B, sol)
     NLinal.append(n)
     TLinal.append(temps)
     ELinal.append(erreur)
+
     
 def GraphTemps():    
     plt.figure()
@@ -282,7 +289,7 @@ def GraphErreur():
     plt.figure()
     plt.subplot()
     plt.plot(NGauss, EGauss, color = 'blue', label='Gauss')
-    plt.plot(NLU, ELU, color='black', label='LU')
+    #plt.plot(NLU, ELU, color='black', label='LU')
     plt.plot(NPartiel, EPartiel, color = 'green', label='Partiel')
     plt.plot(NTotal, ETotal, color = 'red', label='Total')
     plt.plot(NLinal, ELinal, color = 'orange', label='Linalg.solve')
