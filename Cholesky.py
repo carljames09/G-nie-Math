@@ -119,20 +119,20 @@ print("X linalg=",x)
 print(t1,err)
 """
 #--------------------------------Graphes---------------------------------------
-TChol = list ()
-EChol = list ()
-NChol = list ()
+TChol = list()
+EChol = list()
+NChol = list()
 
-TGauss = list ()
-EGauss = list ()
-NGauss = list ()
+TGauss = list()
+EGauss = list()
+NGauss = list()
 
-TLinalg = list ()
-ELinalg = list ()
-NLinalg = list ()
+TLinalg = list()
+ELinalg = list()
+NLinalg = list()
 
  
-for n in range(10, 300, 10):
+for n in range(20, 600, 20):
     A = np.random.rand(n,n)
     B = np.random.rand(n)
     sol, temps = Gauss(A, B)
@@ -141,7 +141,7 @@ for n in range(10, 300, 10):
     TGauss.append(temps)
     EGauss.append(erreur)
     
-for n in range (10, 300, 10):
+for n in range (20, 600, 20):
     M = np.random.randint(low=1, high=10, size=(n,n))
     MT = np.transpose(M)
     A = np.dot(M,MT)
@@ -152,7 +152,7 @@ for n in range (10, 300, 10):
     TChol.append(temps)
     EChol.append(erreur)
     
-for n in range (10, 300, 10):
+for n in range (20, 600, 20):
     M = np.random.randint(low=1, high=10, size=(n,n))
     MT = np.transpose(M)
     A = np.dot(M,MT)
